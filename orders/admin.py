@@ -5,9 +5,9 @@ from .models import Order, Product_order
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("created_at", "state", "qr_code")
 
 
 @admin.register(Product_order)
 class ProductOrderAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("order", "state")
