@@ -15,6 +15,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
     user_type = models.PositiveIntegerField(choices=USER_TYPE_CHOICES)
+    image = models.ImageField(upload_to='profile/', null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 

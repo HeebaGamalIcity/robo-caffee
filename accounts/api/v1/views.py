@@ -38,9 +38,10 @@ def login(request):
         data["detail"] = 'Invalid Credentials'
         return Response(data, status=HTTP_400_BAD_REQUEST)
     token, _ = Token.objects.get_or_create(user=user)
+
     data["data"] = {
         "token": token.key,
-        "type": user.user_type
+        "type": user.user_type,
     }
     return Response(data, status=HTTP_200_OK)
 
