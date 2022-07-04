@@ -2,13 +2,15 @@ from django.db import models
 
 
 class Unit(models.Model):
-    name = models.CharField(max_length=100)
+    ar_name = models.CharField(max_length=100)
+    en_name = models.CharField(max_length=100)
     serial_number = models.IntegerField(unique=True)
+    image = models.ImageField(upload_to='unit/', null=True)
     updated = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.en_name}"
 
 
 class Machine(models.Model):

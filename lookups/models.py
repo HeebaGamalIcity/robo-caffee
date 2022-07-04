@@ -51,7 +51,30 @@ class Image(models.Model):
         return f"{self.tag}"
 
 
+class Ingredients(models.Model):
+    en_name = models.CharField(max_length=255)
+    ar_name = models.CharField(max_length=255)
+    quantity_unit = models.CharField(max_length=10)
+    quantity_stock = models.FloatField(default=0.0)
+    unit = models.ManyToManyField(Unit, through='IngredientsUnit')
+    product = models.ManyToManyField(Product, through='IngredientsProduct')
 
+    def __str__(self):
+        return f"{self.en_name}"
+
+
+class IngredientsUnit(models.Model):
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredients, on_delete=models.CASCADE)
+    max_tank_size = models.FloatField(default=0.0)
+    min_tank_size = models.FloatField(default=0.0)
+    current_tank_size = models.FloatField(default=0.0)
+
+
+class IngredientsProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredients, on_delete=models.CASCADE)
+    size = models.FloatField(default=0.0)
 
 
 

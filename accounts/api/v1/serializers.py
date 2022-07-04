@@ -2,10 +2,13 @@ from rest_framework import serializers
 from accounts.models import User
 
 
-class ProductCatSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    firstName = serializers.CharField(source='first_name')
+    lastName = serializers.CharField(source='last_name')
+    userType = serializers.IntegerField(source='user_type')
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ("email", "userType", "image", "firstName", "lastName")
 
     def get_photo_url(self, cat):
         request = self.context.get('request')

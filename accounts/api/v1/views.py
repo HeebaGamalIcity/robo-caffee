@@ -14,6 +14,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 import random
 import string
+from .serializers import UserSerializer
 
 
 @csrf_exempt
@@ -38,11 +39,10 @@ def login(request):
         data["detail"] = 'Invalid Credentials'
         return Response(data, status=HTTP_400_BAD_REQUEST)
     token, _ = Token.objects.get_or_create(user=user)
-
-    data["data"] = {
-        "token": token.key,
-        "type": user.user_type,
-    }
+    user_data = UserSerializer(instance=user, context={"request": request})
+    print(user_data.data)
+    data["data"] = user_data.data
+    data["data"]["token"] = token.key
     return Response(data, status=HTTP_200_OK)
 
 
