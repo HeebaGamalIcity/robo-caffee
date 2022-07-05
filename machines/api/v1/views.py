@@ -22,6 +22,20 @@ class SensorView(APIView):
         return Response(data={"message": 0}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class SensorView(APIView):
+
+    @permission_classes((AllowAny,))
+    def get(self, request):
+        sensor = Sensor.objects.get(serial_number=request.data.get("sensor"))
+        reading_data = {"value": str(request.data.get("value")),
+                        "sensor": sensor.pk}
+        serializer = ReadingSensorSerializer(data=reading_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data={"message": 1}, status=status.HTTP_200_OK)
+        return Response(data={"message": 0}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class TimerView(APIView):
 
     @permission_classes((AllowAny,))

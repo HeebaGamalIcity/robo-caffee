@@ -4,11 +4,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from orders.models import Order, Product_order
+from machines.models import Unit
 from .serializers import ProductOrderSerializer
 
 
 def create_qr(order):
-    return hex(order.pk)
+    return order.pk
 
 
 class OrderView(APIView):
@@ -89,17 +90,21 @@ class OrderView(APIView):
 
 @api_view(['POST'])
 def confirm_order(request):
-    order_query = Order.objects.get(qr_code=request.data.get('qrCode'))
-    print(order_query)
-    Product_order_queryset = Product_order.objects.filter(order=order_query.pk)
-    order_complete_flag = True
-    for p in Product_order_queryset:
-        if p.product.unit.serial_number == int(request.data['unit']):
-            p.state = 1
-            p.save()
-        if p.state == 0:
-            order_complete_flag = False
-        if order_complete_flag:
-            order_query.state = 2
-            order_query.save()
+    try:
+        order_query = Order.objects.get(qr_code=request.data.get('qrCode'))
+        unit = Unit.objects.get(serial_number=request.data.get('unit'))
+        print(order_query)
+        Product_order_queryset = Product_order.objects.filter(order=order_query.pk)
+        order_complete_flag = True
+        for p in Product_order_queryset:
+            if p.product.unit == unit.pk:
+                p.state = 1
+                p.save()
+            if p.state == 0:
+                order_complete_flag = False
+            if order_complete_flag:
+                order_query.state = 2
+                order_query.save()
+    except:
+        return Response(data={"message": 0}, status=status.HTTP_400_BAD_REQUEST)
     return Response(data={"message":1})

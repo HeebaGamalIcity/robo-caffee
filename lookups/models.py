@@ -37,6 +37,7 @@ class Product(models.Model):
     toppings = models.ManyToManyField(Topping, null=True, blank=True)
     is_image = models.BooleanField()
     is_valid = models.BooleanField(default=True)
+    max_topping = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.en_name}"
