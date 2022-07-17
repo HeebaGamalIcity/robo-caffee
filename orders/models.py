@@ -18,6 +18,6 @@ class Product_order(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ForeignKey(Image, on_delete=models.CASCADE, blank=True, null=True)
-    topping = models.ManyToManyField(Topping, null=True, blank=True)
+    topping = models.ManyToManyField(Topping, blank=True)
     updated = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)

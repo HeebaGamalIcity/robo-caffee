@@ -34,7 +34,7 @@ class Product(models.Model):
     ar_name = models.CharField(max_length=255)
     price = models.PositiveIntegerField()
     is_topping = models.BooleanField()
-    toppings = models.ManyToManyField(Topping, null=True, blank=True)
+    toppings = models.ManyToManyField(Topping, blank=True)
     is_image = models.BooleanField()
     is_valid = models.BooleanField(default=True)
     max_topping = models.PositiveIntegerField(default=0)

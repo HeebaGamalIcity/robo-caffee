@@ -40,7 +40,6 @@ def login(request):
         return Response(data, status=HTTP_400_BAD_REQUEST)
     token, _ = Token.objects.get_or_create(user=user)
     user_data = UserSerializer(instance=user, context={"request": request})
-    print(user_data.data)
     data["data"] = user_data.data
     data["data"]["token"] = token.key
     return Response(data, status=HTTP_200_OK)

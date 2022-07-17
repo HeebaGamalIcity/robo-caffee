@@ -17,7 +17,7 @@ class TimerSerializer(serializers.ModelSerializer):
 class UnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unit
-        fields = ('ar_name', 'en_name', 'image')
+        exclude = ('updated', 'deleted', 'serial_number')
 
     def __init__(self, lang='en', *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -1,0 +1,22 @@
+info:
+  description: ''
+  title: ''
+  version: ''
+openapi: 3.0.0
+paths:
+  /api/lookups/:
+    get:
+      operationId: lookups_list_0
+      tags:
+      - lookups
+  /api/order/:
+    get:
+      operationId: order_list
+      tags:
+      - order
+    post:
+      operationId: order_create
+      tags:
+      - order
+servers:
+- url: ''
