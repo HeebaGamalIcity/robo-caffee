@@ -5,7 +5,7 @@ from .models import Unit, Machine, Timer, Sensor, ReadingSensor
 
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ("ar_name", "en_name", "serial_number")
+    list_display = ("ar_name", "en_name", "serial_number", "pk")
 
 
 @admin.register(Machine)

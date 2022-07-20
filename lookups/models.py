@@ -64,6 +64,22 @@ class Ingredients(models.Model):
         return f"{self.en_name}"
 
 
+class Cup(models.Model):
+    size = models.IntegerField(unique=True)
+    unit = models.ManyToManyField(Unit, through='CupUnit')
+
+    def __str__(self):
+        return f"{self.size}"
+
+
+class CupUnit(models.Model):
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    cup = models.ForeignKey(Cup, on_delete=models.CASCADE)
+    max_tank_size = models.FloatField(default=0)
+    min_tank_size = models.FloatField(default=0)
+    current_tank_size = models.FloatField(default=0)
+
+
 class IngredientsUnit(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredients, on_delete=models.CASCADE)
@@ -75,6 +91,7 @@ class IngredientsUnit(models.Model):
 class IngredientsProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredients, on_delete=models.CASCADE)
+    cup = models.ForeignKey(Cup, on_delete=models.CASCADE)
     size = models.FloatField(default=0.0)
 
 

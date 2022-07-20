@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from machines.models import Sensor, Timer, Unit
+from lookups.models import IngredientsUnit, Ingredients, Cup, CupUnit
+from lookups.api.v1.serializers import IngredientsSerializer, CupUnitSerializer
 from .serializers import ReadingSensorSerializer, UnitSerializer
 import random
 
@@ -51,6 +53,78 @@ class TimerView(APIView):
             return Response(data={"message": 0}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class CupUnitView(APIView):
+
+    @permission_classes((AllowAny,))
+    def get(self, request, operation, unit_id):
+        response_data = {
+            "state": True,
+            "message": "Ok",
+            "data": []
+        }
+        if operation == "show":
+            cups = CupUnit.objects.filter(unit=unit_id)
+            for c in cups:
+                cup_obj = Cup.objects.get(pk=c.pk)
+                cup_data = CupUnitSerializer(instance=c)
+                temp = cup_data.data
+                temp['size'] = cup_obj.size
+                del temp['unit']
+                del temp['cup']
+                response_data['data'].append(temp)
+        return Response(data={"message": response_data}, status=status.HTTP_200_OK)
+
+    @permission_classes((AllowAny,))
+    def post(self, request, operation, unit_id):
+        response_data = {
+            "state": True,
+            "message": "Ok",
+        }
+        if operation == 'refill':
+            for c in request.data.get("cups"):
+                cup = CupUnit.objects.get(cup=c["id"], unit=unit_id)
+                cup.current_tank_size = c["value"]
+                cup.save()
+        return Response(data={"message": response_data}, status=status.HTTP_200_OK)
+
+
+class IngredientUnitView(APIView):
+
+    @permission_classes((AllowAny,))
+    def get(self, request, operation, unit_id):
+        response_data = {
+            "state": True,
+            "message": "Ok",
+            "data": []
+        }
+        if operation == "show":
+            lang = request.headers["lang"]
+            ingredients = IngredientsUnit.objects.filter(unit=unit_id)
+            for i in ingredients:
+                ingredient_obj = Ingredients.objects.get(pk=i.ingredient.pk)
+                ingredient_data = IngredientsSerializer(instance=ingredient_obj, lang=lang, context={"request": request})
+                temp = ingredient_data.data
+                temp['maxTankSize'] = i.max_tank_size
+                temp['currentTankSize'] = i.current_tank_size
+                del temp['unit']
+                del temp['product']
+                response_data['data'].append(temp)
+        return Response(data={"message": response_data}, status=status.HTTP_200_OK)
+
+    @permission_classes((AllowAny,))
+    def post(self, request, operation, unit_id):
+        response_data = {
+            "state": True,
+            "message": "Ok",
+        }
+        if operation == 'refill':
+            for i in request.data.get("ingredients"):
+                ingredient = IngredientsUnit.objects.get(ingredient=i["id"], unit=unit_id)
+                ingredient.current_tank_size = i["value"]
+                ingredient.save()
+        return Response(data={"message": response_data}, status=status.HTTP_200_OK)
+
+
 @api_view(['GET'])
 @permission_classes((AllowAny,))
 def home(request):
@@ -71,6 +145,3 @@ def home(request):
         d['transactions'] = 20145
     response_data['data'] = unit_data.data
     return Response(data=response_data, status=status.HTTP_200_OK)
-
-
-
