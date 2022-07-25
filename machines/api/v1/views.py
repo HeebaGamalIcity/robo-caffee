@@ -72,7 +72,7 @@ class CupUnitView(APIView):
                 del temp['unit']
                 del temp['cup']
                 response_data['data'].append(temp)
-        return Response(data={"message": response_data}, status=status.HTTP_200_OK)
+        return Response(data=response_data, status=status.HTTP_200_OK)
 
     @permission_classes((AllowAny,))
     def post(self, request, operation, unit_id):
@@ -85,7 +85,7 @@ class CupUnitView(APIView):
                 cup = CupUnit.objects.get(cup=c["id"], unit=unit_id)
                 cup.current_tank_size = c["value"]
                 cup.save()
-        return Response(data={"message": response_data}, status=status.HTTP_200_OK)
+        return Response(data=response_data, status=status.HTTP_200_OK)
 
 
 class IngredientUnitView(APIView):
@@ -105,11 +105,12 @@ class IngredientUnitView(APIView):
                 ingredient_data = IngredientsSerializer(instance=ingredient_obj, lang=lang, context={"request": request})
                 temp = ingredient_data.data
                 temp['maxTankSize'] = i.max_tank_size
+                temp['minTankSize'] = i.min_tank_size
                 temp['currentTankSize'] = i.current_tank_size
                 del temp['unit']
                 del temp['product']
                 response_data['data'].append(temp)
-        return Response(data={"message": response_data}, status=status.HTTP_200_OK)
+        return Response(data=response_data, status=status.HTTP_200_OK)
 
     @permission_classes((AllowAny,))
     def post(self, request, operation, unit_id):
@@ -122,7 +123,7 @@ class IngredientUnitView(APIView):
                 ingredient = IngredientsUnit.objects.get(ingredient=i["id"], unit=unit_id)
                 ingredient.current_tank_size = i["value"]
                 ingredient.save()
-        return Response(data={"message": response_data}, status=status.HTTP_200_OK)
+        return Response(data=response_data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
