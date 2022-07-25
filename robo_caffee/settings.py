@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'lookups',
     'machines',
     'accounts',
+    'reports',
 ]
 
 MIDDLEWARE = [
