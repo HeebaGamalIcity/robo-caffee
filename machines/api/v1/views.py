@@ -1,13 +1,16 @@
+import random
+
 from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from machines.models import Sensor, Timer, Unit
-from lookups.models import IngredientsUnit, Ingredients, Cup, CupUnit
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from lookups.api.v1.serializers import IngredientsSerializer, CupUnitSerializer
+from lookups.models import IngredientsUnit, Ingredients, Cup, CupUnit
+from machines.models import Sensor, Timer, Unit
+from reports.models import ReportRefillCup, ReportRefillIngredient
 from .serializers import ReadingSensorSerializer, UnitSerializer
-import random
 
 
 class SensorView(APIView):
@@ -112,7 +115,7 @@ class IngredientUnitView(APIView):
                 response_data['data'].append(temp)
         return Response(data=response_data, status=status.HTTP_200_OK)
 
-    @permission_classes((AllowAny,))
+    @permission_classes((IsAuthenticated,))
     def post(self, request, operation, unit_id):
         response_data = {
             "state": True,
