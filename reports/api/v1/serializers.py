@@ -1,14 +1,8 @@
 from rest_framework import serializers
-from reports.models import ReportRefillCup, ReportRefillIngredient
-
-
-class ReportRefillCupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReportRefillCup
-        fields = '__all__'
+from reports.models import ReportRefill
 
 
 class ReportRefillIngredientSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ReportRefillIngredient
+        model = ReportRefill
         fields = '__all__'

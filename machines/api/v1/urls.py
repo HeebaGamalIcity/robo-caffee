@@ -7,5 +7,5 @@ urlpatterns = [
     path('home', views.home),
     path('unit', views.UnitView.as_view()),
     path('ingredients/<str:operation>/<int:unit_id>', views.IngredientUnitView.as_view()),
-    path('cups/<str:operation>/<int:unit_id>', views.CupUnitView.as_view()),
+    # path('cups/<str:operation>/<int:unit_id>', views.CupUnitView.as_view()),
 ]

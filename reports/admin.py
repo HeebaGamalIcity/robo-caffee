@@ -1,13 +1,9 @@
 from django.contrib import admin
-from .models import ReportRefillIngredient, ReportRefillCup
+from .models import ReportRefill
 # Register your models here.
 
 
-@admin.register(ReportRefillIngredient)
+@admin.register(ReportRefill)
 class ReportRefillIngredientAdmin(admin.ModelAdmin):
-    list_display = ("user", "unit", "ingredient", "before", "after", "time")
+    list_display = ("user", "unit", "ingredient", "cup", "before", "after", "time")
 
-
-@admin.register(ReportRefillCup)
-class ReportRefillCupAdmin(admin.ModelAdmin):
-    list_display = ("user", "unit", "cup", "before", "after", "time")

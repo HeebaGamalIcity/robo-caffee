@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from lookups.api.v1.serializers import IngredientsSerializer, CupUnitSerializer
 from lookups.models import IngredientsUnit, Ingredients, Cup, CupUnit
 from machines.models import Sensor, Timer, Unit
-from reports.models import ReportRefillCup, ReportRefillIngredient
+from reports.models import ReportRefill
 from .serializers import ReadingSensorSerializer, UnitSerializer
 
 
@@ -92,8 +92,8 @@ class CupUnitView(APIView):
                 cup_unit_obj = CupUnit.objects.get(cup=c["id"], unit=unit_id)
                 unit = Unit.objects.get(pk=unit_id)
                 cup = Cup.objects.get(pk=c["id"])
-                report = ReportRefillCup(user=request.user, unit=unit, cup=cup,
-                                                before=cup_unit_obj.current_tank_size, after=c["value"])
+                report = ReportRefill(user=request.user, unit=unit, cup=cup,
+                                      before=cup_unit_obj.current_tank_size, after=c["value"])
                 cup_unit_obj.current_tank_size = c["value"]
                 cup_unit_obj.save()
                 report.save()
@@ -114,7 +114,8 @@ class IngredientUnitView(APIView):
             ingredients = IngredientsUnit.objects.filter(unit=unit_id)
             for i in ingredients:
                 ingredient_obj = Ingredients.objects.get(pk=i.ingredient.pk)
-                ingredient_data = IngredientsSerializer(instance=ingredient_obj, lang=lang, context={"request": request})
+                ingredient_data = IngredientsSerializer(instance=ingredient_obj, lang=lang,
+                                                        context={"request": request})
                 temp = ingredient_data.data
                 temp['maxTankSize'] = i.max_tank_size
                 temp['minTankSize'] = i.min_tank_size
@@ -131,11 +132,12 @@ class IngredientUnitView(APIView):
         }
         if operation == 'refill':
             for i in request.data.get("ingredients"):
+                print(i)
                 ingredient_unit_obj = IngredientsUnit.objects.get(ingredient=i["id"], unit=unit_id)
                 unit = Unit.objects.get(pk=unit_id)
                 ingredient = Ingredients.objects.get(pk=i["id"])
-                report = ReportRefillIngredient(user=request.user, unit=unit, ingredient=ingredient,
-                                                before=ingredient_unit_obj.current_tank_size, after=i["value"])
+                report = ReportRefill(user=request.user, unit=unit, ingredient=ingredient,
+                                      before=ingredient_unit_obj.current_tank_size, after=i["value"])
                 ingredient_unit_obj.current_tank_size = i["value"]
                 ingredient_unit_obj.save()
                 report.save()
