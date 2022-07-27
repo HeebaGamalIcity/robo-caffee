@@ -75,9 +75,9 @@ class Cup(models.Model):
 class CupUnit(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     cup = models.ForeignKey(Cup, on_delete=models.CASCADE)
-    max_tank_size = models.FloatField(default=0)
-    min_tank_size = models.FloatField(default=0)
-    current_tank_size = models.FloatField(default=0)
+    max_tank_size = models.IntegerField(default=0)
+    min_tank_size = models.IntegerField(default=0)
+    current_tank_size = models.IntegerField(default=0)
 
 
 class IngredientsUnit(models.Model):

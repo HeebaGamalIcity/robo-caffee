@@ -2,7 +2,7 @@ import random
 
 from rest_framework import status
 from rest_framework.decorators import permission_classes, api_view
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,6 +11,11 @@ from lookups.models import IngredientsUnit, Ingredients, Cup, CupUnit
 from machines.models import Sensor, Timer, Unit
 from reports.models import ReportRefillCup, ReportRefillIngredient
 from .serializers import ReadingSensorSerializer, UnitSerializer
+
+
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
 
 
 class SensorView(APIView):
@@ -57,8 +62,8 @@ class TimerView(APIView):
 
 
 class CupUnitView(APIView):
+    permission_classes = [IsAuthenticated | ReadOnly]
 
-    @permission_classes((AllowAny,))
     def get(self, request, operation, unit_id):
         response_data = {
             "state": True,
@@ -77,7 +82,6 @@ class CupUnitView(APIView):
                 response_data['data'].append(temp)
         return Response(data=response_data, status=status.HTTP_200_OK)
 
-    @permission_classes((AllowAny,))
     def post(self, request, operation, unit_id):
         response_data = {
             "state": True,
@@ -85,15 +89,20 @@ class CupUnitView(APIView):
         }
         if operation == 'refill':
             for c in request.data.get("cups"):
-                cup = CupUnit.objects.get(cup=c["id"], unit=unit_id)
-                cup.current_tank_size = c["value"]
-                cup.save()
+                cup_unit_obj = CupUnit.objects.get(cup=c["id"], unit=unit_id)
+                unit = Unit.objects.get(pk=unit_id)
+                cup = Cup.objects.get(pk=c["id"])
+                report = ReportRefillCup(user=request.user, unit=unit, cup=cup,
+                                                before=cup_unit_obj.current_tank_size, after=c["value"])
+                cup_unit_obj.current_tank_size = c["value"]
+                cup_unit_obj.save()
+                report.save()
         return Response(data=response_data, status=status.HTTP_200_OK)
 
 
 class IngredientUnitView(APIView):
+    permission_classes = [IsAuthenticated | ReadOnly]
 
-    @permission_classes((AllowAny,))
     def get(self, request, operation, unit_id):
         response_data = {
             "state": True,
@@ -115,7 +124,6 @@ class IngredientUnitView(APIView):
                 response_data['data'].append(temp)
         return Response(data=response_data, status=status.HTTP_200_OK)
 
-    @permission_classes((IsAuthenticated,))
     def post(self, request, operation, unit_id):
         response_data = {
             "state": True,
@@ -123,9 +131,15 @@ class IngredientUnitView(APIView):
         }
         if operation == 'refill':
             for i in request.data.get("ingredients"):
-                ingredient = IngredientsUnit.objects.get(ingredient=i["id"], unit=unit_id)
-                ingredient.current_tank_size = i["value"]
-                ingredient.save()
+                ingredient_unit_obj = IngredientsUnit.objects.get(ingredient=i["id"], unit=unit_id)
+                unit = Unit.objects.get(pk=unit_id)
+                ingredient = Ingredients.objects.get(pk=i["id"])
+                report = ReportRefillIngredient(user=request.user, unit=unit, ingredient=ingredient,
+                                                before=ingredient_unit_obj.current_tank_size, after=i["value"])
+                ingredient_unit_obj.current_tank_size = i["value"]
+                ingredient_unit_obj.save()
+                report.save()
+
         return Response(data=response_data, status=status.HTTP_200_OK)
 
 
