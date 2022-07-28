@@ -15,7 +15,7 @@ from django.db.models import Q
 class ReportRefillIngredientView(APIView):
 
     @permission_classes((AllowAny,))
-    def get(self, request, filter):
+    def post(self, request, filter):
         lang = request.headers["lang"]
         response_data = {
             "state": True,

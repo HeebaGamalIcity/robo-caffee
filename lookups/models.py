@@ -55,10 +55,11 @@ class Image(models.Model):
 class Ingredients(models.Model):
     en_name = models.CharField(max_length=255)
     ar_name = models.CharField(max_length=255)
-    quantity_unit = models.CharField(max_length=10)
+    quantity_measurement_unit = models.CharField(max_length=10)
     quantity_stock = models.FloatField(default=0.0)
     unit = models.ManyToManyField(Unit, through='IngredientsUnit')
     product = models.ManyToManyField(Product, through='IngredientsProduct')
+    topping = models.OneToOneField(Topping, null=True, blank=True, on_delete= models.CASCADE)
 
     def __str__(self):
         return f"{self.en_name}"
