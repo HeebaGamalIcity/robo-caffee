@@ -59,7 +59,7 @@ class Ingredients(models.Model):
     quantity_stock = models.FloatField(default=0.0)
     unit = models.ManyToManyField(Unit, through='IngredientsUnit')
     product = models.ManyToManyField(Product, through='IngredientsProduct')
-    topping = models.OneToOneField(Topping, null=True, blank=True, on_delete= models.CASCADE)
+    topping = models.OneToOneField(Topping, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.en_name}"
@@ -67,6 +67,7 @@ class Ingredients(models.Model):
 
 class Cup(models.Model):
     size = models.IntegerField(unique=True)
+    quantity_stock = models.PositiveIntegerField(default=0)
     unit = models.ManyToManyField(Unit, through='CupUnit')
 
     def __str__(self):
@@ -76,8 +77,8 @@ class Cup(models.Model):
 class CupUnit(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     cup = models.ForeignKey(Cup, on_delete=models.CASCADE)
-    max_tank_size = models.IntegerField(default=0)
-    min_tank_size = models.IntegerField(default=0)
+    max_tank_size = models.PositiveIntegerField(default=0)
+    min_tank_size = models.PositiveIntegerField(default=0)
     current_tank_size = models.IntegerField(default=0)
 
 

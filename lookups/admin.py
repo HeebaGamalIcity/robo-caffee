@@ -40,7 +40,7 @@ class IngredientsProductAdmin(admin.ModelAdmin):
 
 @admin.register(Cup)
 class CupAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('pk', 'size')
 
 
 @admin.register(CupUnit)

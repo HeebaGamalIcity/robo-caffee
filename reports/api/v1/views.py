@@ -26,7 +26,7 @@ class ReportRefillIngredientView(APIView):
         if filter == "all":
             report = ReportRefill.objects.all()
         elif filter =="tech":
-            name = request.data.get("name")
+            name = request.data.get("searchKey")
             user = User.objects.all()
             for term in name.split():
                 user = user.filter(Q(first_name__icontains=term) | Q(last_name__icontains=term))
@@ -35,7 +35,7 @@ class ReportRefillIngredientView(APIView):
                 for r in report_query:
                     report.append(r)
         elif filter == "date":
-            date = request.data.get("date")
+            date = request.data.get("searchKey")
             year, month, day = date.split("-")
             report = ReportRefill.objects.filter(time__year=year, time__month=month, time__day=day)
 
@@ -44,11 +44,15 @@ class ReportRefillIngredientView(APIView):
         for r in response_data["data"]:
             user = User.objects.get(pk=r["user"])
             r["user"] = user.first_name + " " + user.last_name
+            if r["cup"] is not None:
+                r["cup"] = Cup.objects.get(pk=r["cup"]).size
             if lang == "ar":
                 r["unit"] = Unit.objects.get(pk=r["unit"]).ar_name
-                r["ingredient"] = Ingredients.objects.get(pk=r["ingredient"]).ar_name
+                if r["ingredient"] is not None:
+                    r["ingredient"] = Ingredients.objects.get(pk=r["ingredient"]).ar_name
             elif lang == "en":
                 r["unit"] = Unit.objects.get(pk=r["unit"]).en_name
-                r["ingredient"] = Ingredients.objects.get(pk=r["ingredient"]).en_name
+                if r["ingredient"] is not None:
+                    r["ingredient"] = Ingredients.objects.get(pk=r["ingredient"]).en_name
 
         return Response(data=response_data, status=status.HTTP_200_OK)

@@ -92,9 +92,14 @@ class CupUnitView(APIView):
                 cup_unit_obj = CupUnit.objects.get(cup=c["id"], unit=unit_id)
                 unit = Unit.objects.get(pk=unit_id)
                 cup = Cup.objects.get(pk=c["id"])
+                plus_value = c["value"] - cup_unit_obj.current_tank_size
+                print(cup.quantity_stock)
+                cup.quantity_stock -= plus_value
+                print(cup.quantity_stock)
                 report = ReportRefill(user=request.user, unit=unit, cup=cup,
                                       before=cup_unit_obj.current_tank_size, after=c["value"])
                 cup_unit_obj.current_tank_size = c["value"]
+                cup.save()
                 cup_unit_obj.save()
                 report.save()
         return Response(data=response_data, status=status.HTTP_200_OK)
@@ -132,13 +137,15 @@ class IngredientUnitView(APIView):
         }
         if operation == 'refill':
             for i in request.data.get("ingredients"):
-                print(i)
                 ingredient_unit_obj = IngredientsUnit.objects.get(ingredient=i["id"], unit=unit_id)
                 unit = Unit.objects.get(pk=unit_id)
                 ingredient = Ingredients.objects.get(pk=i["id"])
+                plus_value = i["value"] - ingredient_unit_obj.current_tank_size
+                ingredient.quantity_stock -= plus_value
                 report = ReportRefill(user=request.user, unit=unit, ingredient=ingredient,
                                       before=ingredient_unit_obj.current_tank_size, after=i["value"])
                 ingredient_unit_obj.current_tank_size = i["value"]
+                ingredient.save()
                 ingredient_unit_obj.save()
                 report.save()
 

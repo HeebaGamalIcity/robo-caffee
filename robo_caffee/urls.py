@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/accounts/', include('accounts.api.v1.urls')),
     path('api/machines/', include('machines.api.v1.urls')),
     path('api/reports/', include('reports.api.v1.urls')),
+    path('api/stock/', include('stock.api.v1.urls')),
     path('docs', include_docs_urls(title="robo-caffee")),
     path('openapi', get_schema_view(
             title="robo_caffee",
