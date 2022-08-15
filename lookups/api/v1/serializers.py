@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from lookups.models import ProductCat, Product, Topping, Image, Ingredients, IngredientsUnit, Cup, CupUnit
+from lookups.models import ProductCat, Product, Image, Ingredients, IngredientsUnit, Cup, CupUnit
 
 
 class ProductCatSerializer(serializers.ModelSerializer):
@@ -49,31 +49,6 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_photo_url(self, product):
         request = self.context.get('request')
         photo_url = product.image.url
-        return request.build_absolute_uri(photo_url)
-
-
-class ToppingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Topping
-        fields = '__all__'
-
-    def __init__(self, lang='en', *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.lang = lang
-
-    def to_representation(self, instance):
-        data = super(ToppingSerializer, self).to_representation(instance)
-        if self.lang == 'ar':
-            data["name"] = data["ar_name"]
-        else:
-            data["name"] = data["en_name"]
-        del data["ar_name"]
-        del data["en_name"]
-        return data
-
-    def get_photo_url(self, topping):
-        request = self.context.get('request')
-        photo_url = topping.image.url
         return request.build_absolute_uri(photo_url)
 
 

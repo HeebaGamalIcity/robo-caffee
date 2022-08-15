@@ -22,9 +22,9 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+
     def __str__(self):
         return self.email
-
 
 
 class ResetPasswordCode(models.Model):

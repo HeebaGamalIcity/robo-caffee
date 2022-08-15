@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
-from lookups.models import ProductCat, Product, Topping, Image
-from .serializers import ProductCatSerializer, ProductSerializer, ToppingSerializer, ImageSerializer
+from lookups.models import ProductCat, Product, Image, Ingredients, IngredientsProduct
+from .serializers import ProductCatSerializer, ProductSerializer, ImageSerializer, IngredientsSerializer
 
 
 class ProductList(ListView):
@@ -24,14 +24,15 @@ def get_cat(cat, request):
     cat_data = {"catInfo": cat_serializer.data,
                 "products": product_serializer.data}
     main_cat_id = main_cat_product(cat)
-    for p in product_serializer.data:
-        toppings_list = []
-        for t in p['toppings']:
-            topping_query = Topping.objects.get(pk=t)
-            topping_serializer = ToppingSerializer(instance=topping_query, lang=lang, context={"request": request})
-            toppings_list.append(topping_serializer.data)
-        p['toppings'] = toppings_list
-        p['mainCat'] = main_cat_id
+    # for p in product_serializer.data:
+    #     toppings_list = []
+    #     toppings_product =
+    #     for t in p['toppings']:
+    #         topping_query = Ingredients.objects.get(pk=t)
+    #         topping_serializer = ToppingSerializer(instance=topping_query, lang=lang, context={"request": request})
+    #         toppings_list.append(topping_serializer.data)
+    #     p['toppings'] = toppings_list
+    #     p['mainCat'] = main_cat_id
 
     return cat_data
 

@@ -41,9 +41,8 @@ class CupStock(APIView):
             "message": "Ok",
             "data": []
         }
-        lang = request.headers["lang"]
         cups = Cup.objects.all()
-        serializer = IngredientsSerializer(instance=cups, lang=lang, context={"request": request}, many=True)
+        serializer = CupSerializer(instance=cups, many=True)
         response_data["data"] = serializer.data
         for r in response_data["data"]:
             del r["unit"]

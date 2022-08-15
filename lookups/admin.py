@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ProductCat, Product, Topping, Image, Ingredients, IngredientsUnit, IngredientsProduct, Cup, CupUnit
+from .models import ProductCat, Product, Image, Ingredients, IngredientsUnit, IngredientsProduct, Cup, CupUnit
 # Register your models here.
 
 
@@ -10,11 +10,6 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(ProductCat)
 class ProductCatAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Topping)
-class ToppingAdmin(admin.ModelAdmin):
     pass
 
 

@@ -1,5 +1,5 @@
 from django.db import models
-from lookups.models import Product, Topping, Image
+from lookups.models import Product, Image
 from machines.models import Unit
 
 
@@ -18,6 +18,6 @@ class Product_order(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ForeignKey(Image, on_delete=models.CASCADE, blank=True, null=True)
-    topping = models.ManyToManyField(Topping, blank=True)
+    # topping = models.ManyToManyField(Topping, blank=True)
     updated = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)

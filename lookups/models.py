@@ -14,17 +14,6 @@ class ProductCat(models.Model):
         return f"{self.en_name}"
 
 
-class Topping(models.Model):
-    en_name = models.CharField(max_length=255)
-    ar_name = models.CharField(max_length=255)
-    price = models.PositiveIntegerField()
-    image = models.ImageField(upload_to='toppings/')
-    unit_index = models.PositiveIntegerField(null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.en_name}"
-
-
 class Product(models.Model):
     product_cat = models.ForeignKey(ProductCat, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True)
@@ -34,7 +23,6 @@ class Product(models.Model):
     ar_name = models.CharField(max_length=255)
     price = models.PositiveIntegerField()
     is_topping = models.BooleanField()
-    toppings = models.ManyToManyField(Topping, blank=True)
     is_image = models.BooleanField()
     is_valid = models.BooleanField(default=True)
     max_topping = models.PositiveIntegerField(default=0)
@@ -59,7 +47,7 @@ class Ingredients(models.Model):
     quantity_stock = models.FloatField(default=0.0)
     unit = models.ManyToManyField(Unit, through='IngredientsUnit')
     product = models.ManyToManyField(Product, through='IngredientsProduct')
-    topping = models.OneToOneField(Topping, null=True, blank=True, on_delete=models.CASCADE)
+    topping = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.en_name}"
